@@ -32,8 +32,8 @@ async fn main() {
 
     let address = format!("{}:{}", host, port);
 
-    // TODO: Add tracing
-
     let listener = tokio::net::TcpListener::bind(address).await.unwrap();
+
+    println!("->> LISTENING on {:?}\n", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
 }

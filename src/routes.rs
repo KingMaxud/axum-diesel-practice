@@ -1,4 +1,6 @@
 use crate::handlers::posts::create_post::create_post;
+use crate::handlers::posts::get_post::get_post;
+use crate::handlers::posts::list_posts::list_posts;
 use crate::AppState;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
@@ -29,5 +31,7 @@ async fn handler_404() -> impl IntoResponse {
 fn post_routes(state: AppState) -> Router<AppState> {
     Router::new()
         .route("/", post(create_post))
+        .route("/:id", get(get_post))
+        .route("/", get(list_posts))
         .with_state(state)
 }

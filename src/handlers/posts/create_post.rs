@@ -2,13 +2,14 @@ use crate::domain::models::post::PostError;
 use crate::handlers::posts::{CreatePostRequest, PostResponse};
 use crate::infra::repositories::post_repository;
 use crate::AppState;
-use axum::extract::State;
-use axum::Json;
+use axum::{extract::State, Json};
 
 pub async fn create_post(
     State(state): State<AppState>,
     Json(new_post): Json<CreatePostRequest>,
 ) -> Result<Json<PostResponse>, PostError> {
+    println!("->> {:<12} - create_post", "HANDLER");
+
     let new_post_db = post_repository::NewPostDb {
         title: new_post.title,
         body: new_post.body,
