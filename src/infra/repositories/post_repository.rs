@@ -161,6 +161,28 @@ pub async fn update(
     Ok(adapt_post_db_to_post(res))
 }
 
+pub async fn delete(
+    pool: &deadpool_diesel::postgres::Pool,
+    id: Uuid,
+) -> Result<PostModel, InfraError> {
+    println!("->> {:<12} - delete", "INFRASTRUCTURE");
+
+    // Get a database connection from the pool and handle any potential errors
+    let conn = pool.get().await.map_err(adapt_infra_error)?;
+
+    let res = conn
+        .interact(move |conn| {
+            diesel::delete(posts::table.filter(posts::id.eq(id)))
+                .returning(PostDb::as_returning())
+                .get_result(conn)
+        })
+        .await
+        .map_err(adapt_infra_error)?
+        .map_err(adapt_infra_error)?;
+
+    Ok(adapt_post_db_to_post(res))
+}
+
 fn adapt_post_db_to_post(post_db: PostDb) -> PostModel {
     PostModel {
         id: post_db.id,
