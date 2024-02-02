@@ -1,9 +1,12 @@
 use crate::domain::models::post::PostModel;
-use crate::infra::db::schema::posts;
-use crate::infra::errors::{adapt_infra_error, InfraError};
+use crate::handlers::posts::UpdatePostRequest;
+use crate::infra::{
+    db::schema::posts,
+    errors::{adapt_infra_error, InfraError},
+};
 use diesel::{
-    ExpressionMethods, Insertable, PgTextExpressionMethods, QueryDsl, Queryable, RunQueryDsl,
-    Selectable, SelectableHelper,
+    AsChangeset, ExpressionMethods, Insertable, PgTextExpressionMethods, QueryDsl, Queryable,
+    RunQueryDsl, Selectable, SelectableHelper,
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -30,6 +33,14 @@ pub struct NewPostDb {
 pub struct PostsFilter {
     published: Option<bool>,
     title_contains: Option<String>,
+}
+
+#[derive(AsChangeset)]
+#[diesel(table_name = posts)]
+struct UpdatePostChangeset {
+    title: Option<String>,
+    body: Option<String>,
+    published: Option<bool>,
 }
 
 pub async fn insert(
@@ -118,6 +129,36 @@ pub async fn get_all(
         .collect();
 
     Ok(posts)
+}
+
+pub async fn update(
+    pool: &deadpool_diesel::postgres::Pool,
+    id: Uuid,
+    updated_post: UpdatePostRequest,
+) -> Result<PostModel, InfraError> {
+    println!("->> {:<12} - update", "INFRASTRUCTURE");
+
+    // Get a database connection from the pool and handle any potential errors
+    let conn = pool.get().await.map_err(adapt_infra_error)?;
+
+    let changeset = UpdatePostChangeset {
+        title: updated_post.title,
+        body: updated_post.body,
+        published: updated_post.published,
+    };
+
+    let res = conn
+        .interact(move |conn| {
+            diesel::update(posts::table.filter(posts::id.eq(id)))
+                .set(&changeset)
+                .returning(PostDb::as_returning())
+                .get_result(conn)
+        })
+        .await
+        .map_err(adapt_infra_error)?
+        .map_err(adapt_infra_error)?;
+
+    Ok(adapt_post_db_to_post(res))
 }
 
 fn adapt_post_db_to_post(post_db: PostDb) -> PostModel {
