@@ -9,6 +9,7 @@ use diesel::{
     RunQueryDsl, Selectable, SelectableHelper,
 };
 use serde::{Deserialize, Serialize};
+use tracing::log::debug;
 use uuid::Uuid;
 
 #[derive(Serialize, Queryable, Selectable)]
@@ -47,7 +48,7 @@ pub async fn insert(
     pool: &deadpool_diesel::postgres::Pool,
     new_post: NewPostDb,
 ) -> Result<PostModel, InfraError> {
-    println!("->> {:<12} - insert", "INFRASTRUCTURE");
+    debug!("->> {:<12} - insert", "INFRASTRUCTURE");
 
     // Get a database connection from the pool and handle any potential errors
     let conn = pool.get().await.map_err(adapt_infra_error)?;
@@ -71,7 +72,7 @@ pub async fn get(
     pool: &deadpool_diesel::postgres::Pool,
     id: Uuid,
 ) -> Result<PostModel, InfraError> {
-    println!("->> {:<12} - get", "INFRASTRUCTURE");
+    debug!("->> {:<12} - get", "INFRASTRUCTURE");
 
     // Get a database connection from the pool and handle any potential errors
     let conn = pool.get().await.map_err(adapt_infra_error)?;
@@ -96,7 +97,7 @@ pub async fn get_all(
     pool: &deadpool_diesel::postgres::Pool,
     filter: PostsFilter,
 ) -> Result<Vec<PostModel>, InfraError> {
-    println!("->> {:<12} - get_all", "INFRASTRUCTURE");
+    debug!("->> {:<12} - get_all", "INFRASTRUCTURE");
 
     // Get a database connection from the pool and handle any potential errors
     let conn = pool.get().await.map_err(adapt_infra_error)?;
@@ -136,7 +137,7 @@ pub async fn update(
     id: Uuid,
     updated_post: UpdatePostRequest,
 ) -> Result<PostModel, InfraError> {
-    println!("->> {:<12} - update", "INFRASTRUCTURE");
+    debug!("->> {:<12} - update", "INFRASTRUCTURE");
 
     // Get a database connection from the pool and handle any potential errors
     let conn = pool.get().await.map_err(adapt_infra_error)?;
@@ -165,7 +166,7 @@ pub async fn delete(
     pool: &deadpool_diesel::postgres::Pool,
     id: Uuid,
 ) -> Result<PostModel, InfraError> {
-    println!("->> {:<12} - delete", "INFRASTRUCTURE");
+    debug!("->> {:<12} - delete", "INFRASTRUCTURE");
 
     // Get a database connection from the pool and handle any potential errors
     let conn = pool.get().await.map_err(adapt_infra_error)?;

@@ -3,12 +3,13 @@ use crate::handlers::posts::{CreatePostRequest, PostResponse};
 use crate::infra::repositories::post_repository;
 use crate::AppState;
 use axum::{extract::State, Json};
+use tracing::log::debug;
 
 pub async fn create_post(
     State(state): State<AppState>,
     Json(new_post): Json<CreatePostRequest>,
 ) -> Result<Json<PostResponse>, PostError> {
-    println!("->> {:<12} - create_post", "HANDLER");
+    debug!("->> {:<12} - create_post", "HANDLER");
 
     let new_post_db = post_repository::NewPostDb {
         title: new_post.title,

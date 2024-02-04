@@ -1,6 +1,7 @@
 use crate::config::config;
 use crate::routes::app_router;
 use deadpool_diesel::postgres::{Manager, Pool};
+use tracing::log::debug;
 
 mod config;
 mod domain;
@@ -16,6 +17,8 @@ pub struct AppState {
 #[tokio::main]
 async fn main() {
     let config = config().await;
+
+    env_logger::init();
 
     let manager = Manager::new(
         config.db_url().to_string(),
@@ -34,6 +37,6 @@ async fn main() {
 
     let listener = tokio::net::TcpListener::bind(address).await.unwrap();
 
-    println!("->> LISTENING on {:?}\n", listener.local_addr().unwrap());
+    debug!("LISTENING on {:?}\n", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
 }

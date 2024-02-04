@@ -4,6 +4,7 @@ use crate::infra::repositories::post_repository;
 use crate::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
+use tracing::log::debug;
 use uuid::Uuid;
 
 pub async fn update_post(
@@ -11,7 +12,7 @@ pub async fn update_post(
     Path(id): Path<Uuid>,
     Json(updated_post): Json<UpdatePostRequest>,
 ) -> Result<Json<PostResponse>, PostError> {
-    println!("->> {:<12} - update_post", "HANDLER");
+    debug!("->> {:<12} - update_post", "HANDLER");
 
     let updated_response = post_repository::update(&state.pool, id, updated_post)
         .await

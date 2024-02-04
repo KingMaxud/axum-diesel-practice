@@ -7,13 +7,14 @@ use axum::{
     extract::{Path, State},
     Json,
 };
+use tracing::log::debug;
 use uuid::Uuid;
 
 pub async fn get_post(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<PostResponse>, PostError> {
-    println!("->> {:<12} - get_post", "HANDLER");
+    debug!("->> {:<12} - get_post", "HANDLER");
 
     let post = post_repository::get(&state.pool, id)
         .await

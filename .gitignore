@@ -17,3 +17,6 @@ Cargo.lock
 ### IDE ###
 # Ignore everything
 .idea/*
+
+### ENV ###
+.env

@@ -1,6 +1,7 @@
 // Import necessary modules and types
 use axum::extract::{Query, State};
 use axum::Json;
+use tracing::log::debug;
 
 // Import internal modules and types
 use crate::domain::models::post::{PostError, PostModel};
@@ -13,7 +14,7 @@ pub async fn list_posts(
     State(state): State<AppState>,
     Query(params): Query<PostsFilter>,
 ) -> Result<Json<ListPostsResponse>, PostError> {
-    println!("->> {:<12} - list_posts", "HANDLER");
+    debug!("->> {:<12} - list_posts", "HANDLER");
 
     let posts = get_all(&state.pool, params)
         .await

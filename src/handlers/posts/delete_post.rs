@@ -4,13 +4,14 @@ use crate::infra::repositories::post_repository;
 use crate::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
+use tracing::log::debug;
 use uuid::Uuid;
 
 pub async fn delete_post(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<PostResponse>, PostError> {
-    println!("->> {:<12} - delete_post", "HANDLER");
+    debug!("->> {:<12} - delete_post", "HANDLER");
 
     let deleted_response = post_repository::delete(&state.pool, id)
         .await
