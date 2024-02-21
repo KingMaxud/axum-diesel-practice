@@ -50,3 +50,15 @@ impl Error for InteractError {
         InfraError::InternalServerError // Map all InteractError instances to InfraError::InternalServerError
     }
 }
+
+impl Error for dotenvy::Error {
+    fn as_infra_error(&self) -> InfraError {
+        InfraError::InternalServerError // Map all InteractError instances to InfraError::InternalServerError
+    }
+}
+
+impl Error for &str {
+    fn as_infra_error(&self) -> InfraError {
+        InfraError::InternalServerError // Map all InteractError instances to InfraError::InternalServerError
+    }
+}
