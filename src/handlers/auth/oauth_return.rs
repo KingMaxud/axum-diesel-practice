@@ -62,7 +62,7 @@ pub async fn oauth_return(
         return Err(AuthError::EmailAddressIsNotVerified);
     }
 
-    let user_id = user_repository::insert_new_user_if_not_exists(&state.pool, email)
+    let user_id = user_repository::insert_if_not_exists(&state.pool, email)
         .await
         .map_err(AuthError::InfraError)?;
 
@@ -77,7 +77,7 @@ pub async fn oauth_return(
     )]);
     let now = Utc::now().timestamp();
 
-    let new_user_session = user_sessions_repository::NewUserSession {
+    let new_user_session = user_sessions_repository::NewUserSessionDb {
         user_id,
         session_token_p1,
         session_token_p2,

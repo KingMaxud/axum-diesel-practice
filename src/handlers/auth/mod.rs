@@ -1,11 +1,14 @@
 use crate::domain::models::auth::AuthError;
 use dotenvy::var;
-use oauth2::basic::BasicClient;
-use oauth2::{AuthUrl, ClientId, ClientSecret, RedirectUrl, RevocationUrl, TokenUrl};
+use oauth2::{
+    basic::BasicClient, AuthUrl, ClientId, ClientSecret, RedirectUrl, RevocationUrl, TokenUrl,
+};
 use serde::Deserialize;
+use uuid::Uuid;
 
 pub mod login;
 pub mod oauth_return;
+pub mod profile;
 
 #[derive(Deserialize)]
 pub struct LoginParams {
@@ -14,7 +17,7 @@ pub struct LoginParams {
 
 #[derive(Clone, Debug)]
 pub struct UserData {
-    pub user_id: i64,
+    pub user_id: Uuid,
     pub user_email: String,
 }
 

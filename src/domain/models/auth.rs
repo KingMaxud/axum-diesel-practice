@@ -7,6 +7,7 @@ use serde_json::json;
 #[derive(Debug)]
 pub enum AuthError {
     EmailAddressIsNotVerified,
+    Unauthenticated,
     InfraError(InfraError),
 }
 
@@ -20,6 +21,10 @@ impl IntoResponse for AuthError {
             Self::EmailAddressIsNotVerified => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "OAuth: email address is not verified".to_string(),
+            ),
+            Self::Unauthenticated => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "User not logged in or unauthorized".to_string(),
             ),
         };
 

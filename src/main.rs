@@ -7,6 +7,7 @@ mod config;
 mod domain;
 mod handlers;
 mod infra;
+mod middlewares;
 mod routes;
 
 #[derive(Clone)]
